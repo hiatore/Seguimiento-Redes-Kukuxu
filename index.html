@@ -1,90 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantilla Google Sheets - Gestión RRSS Kukuxumusu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #e63946;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .in-progress {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        .completed {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        .published {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .priority-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .priority-low {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+        .calendar-day {
+            border: 1px solid #ddd;
+            min-height: 100px;
+            padding: 5px;
+            position: relative;
+        }
+        .day-number {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-weight: bold;
+            color: #666;
+        }
+        .post {
+            margin-top: 20px;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .instagram {
+            background-color: #e1306c;
+            color: white;
+        }
+        .facebook {
+            background-color: #4267B2;
+            color: white;
+        }
+        .twitter {
+            background-color: #1DA1F2;
+            color: white;
+        }
+        .chart {
+            width: 100%;
+            height: 300px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .chart-placeholder {
+            text-align: center;
+            color: #666;
+        }
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 250px;
+            width: 80%;
+        }
+        .chart-bar {
+            width: 40px;
+            background-color: #4267B2;
+            margin: 0 5px;
+            position: relative;
+        }
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .chart-bar-value {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e63946;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <span>KUKUXUMUSU</span> - Gestión de Redes Sociales
+        </div>
 
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>REMISIÓN</title>
-		<link rel="stylesheet" href="https://fredyortegon30.github.io/invoice/style.css">
-		<link rel="license" href="https://www.opensource.org/licenses/mit-license/">
-	</head>
-	<body>
-		<header>
-			<h1>REMISIÓN</h1>
-			<address>
-				<p>MI EMPRESA</p>
-				<p>NIT 1111111111<br>Calle 11- 10-33</p>
-				<p>Pereira</p>
-			</address>
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('planificacion')">Planificación de Contenido</div>
+            <div class="tab" onclick="showTab('calendario')">Calendario de Publicaciones</div>
+            <div class="tab" onclick="showTab('control')">Control de Tareas</div>
+            <div class="tab" onclick="showTab('reporting')">Reporting y Métricas</div>
+        </div>
 
-<div style="float: right;">
-    <img alt="" src="https://acortar.link/caSNRS" style="width: 100px; height: 100px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title="">
-</div>
+        <div id="planificacion" class="tab-content active">
+            <h2>Planificación de Contenido</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Red Social</th>
+                        <th>Tipo</th>
+                        <th>Tema/Campaña</th>
+                        <th>Objetivo</th>
+                        <th>Copy</th>
+                        <th>Recursos</th>
+                        <th>Responsable</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>15/03/2025</td>
+                        <td>Instagram</td>
+                        <td>Carrusel</td>
+                        <td>Colección Primavera</td>
+                        <td>Ventas</td>
+                        <td>¡Descubre nuestra nueva colección de primavera! 🌸 #Kukuxumusu #NuevaColección</td>
+                        <td>Fotos de productos, diseños nuevos</td>
+                        <td>Ana</td>
+                        <td><span class="status in-progress">En proceso</span></td>
+                    </tr>
+                    <tr>
+                        <td>18/03/2025</td>
+                        <td>Facebook</td>
+                        <td>Video</td>
+                        <td>Behind the scenes</td>
+                        <td>Engagement</td>
+                        <td>Así creamos nuestros diseños en Kukuxumusu. ¡Echa un vistazo al proceso creativo!</td>
+                        <td>Video del estudio, entrevistas</td>
+                        <td>Carlos</td>
+                        <td><span class="status pending">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td>20/03/2025</td>
+                        <td>Twitter</td>
+                        <td>Imagen</td>
+                        <td>Día Mundial de la Felicidad</td>
+                        <td>Branding</td>
+                        <td>Hoy celebramos el #DíaMundialDeLaFelicidad con nuestros diseños más alegres 😊</td>
+                        <td>Diseño especial día felicidad</td>
+                        <td>Laura</td>
+                        <td><span class="status completed">Listo</span></td>
+                    </tr>
+                    <tr>
+                        <td>22/03/2025</td>
+                        <td>Instagram</td>
+                        <td>Historia</td>
+                        <td>Encuesta usuarios</td>
+                        <td>Feedback</td>
+                        <td>¿Qué diseño te gusta más? ¡Vota y ayúdanos a decidir!</td>
+                        <td>Dos diseños alternativos</td>
+                        <td>Ana</td>
+                        <td><span class="status pending">Pendiente</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <div id="calendario" class="tab-content">
+            <h2>Calendario de Publicaciones - Marzo 2025</h2>
+            <div class="calendar">
+                <div class="calendar-header">Lunes</div>
+                <div class="calendar-header">Martes</div>
+                <div class="calendar-header">Miércoles</div>
+                <div class="calendar-header">Jueves</div>
+                <div class="calendar-header">Viernes</div>
+                <div class="calendar-header">Sábado</div>
+                <div class="calendar-header">Domingo</div>
 
-		</header>
-		<article>
-			<h1>Recipient</h1>
-			<address>
-				<p>&lt;&lt;[id_cliente].[Nombre_cliente]&gt;&gt;<br>-</p>
-                <p class="small-text"><br>Email: &lt;&lt;[id_cliente].[Email]&gt;&gt;</p>
-                <p class="small-text">Cel:&lt;&lt;[id_cliente].[Celular]&gt;&gt;</p>
-			</address>
-			<table class="meta">
-				<tr>
-					<th><span>Remisión #</span></th>
-					<td><span>&lt;&lt;[N_factura]&gt;&gt;</span></td>
-				</tr>
-				<tr>
-					<th><span>Fecha</span></th>
-					<td><span>&lt;&lt;[Fecha]&gt;&gt;</span></td>
-				</tr>
-				<tr>
-					<th><span>Total</span></th>
-					<td><span>&lt;&lt;[TOTAL VENTA]&gt;&gt;</span></td>
-				</tr>
-			</table>
-			<table class="inventory">
-				<thead>
-					<tr>
-						<th><span>Producto</span></th>
-						<th><span>Descripcion</span></th>
-						<th><span>Valor ud</span></th>
-						<th><span>Cantidad</span></th>
-						<th><span>Subtotal</span></th>
-					</tr>
-				</thead>
-				<tbody>
-				<p><span>&lt;&lt;Start: SELECT(DETALLE_VENTAS[id_detalle],[id_encabezado_venta]=[id_encabezado]) &gt;&gt;</span></p>
-					<tr>
-						<td><a class="cut">-</a>&lt;&lt;[id_producto].[Nombre de producto]&gt;&gt;</td>
-						<td><span></span></td>
-				        <td><span>&lt;&lt;[Valor_unitario]&gt;&gt;</span></td>
-						<td><span>&lt;&lt;[Cantidad]&gt;&gt;</span></td>
-						<td><span>&lt;&lt;[Subtotal]&gt;&gt;</span></td>
-					</tr>
-				<p><span>&lt;&lt; end &gt;&gt;</span></p>
-				</tbody>
-			</table>
-			<a class="add">+</a>
-			<table class="balance">
-				<tr>
-					<th><span>Total</span></th>
-					<td><span>&lt;&lt;[TOTAL VENTA]&gt;&gt;</span></td>
-				</tr>
-				<tr>
-					<th><span>Otros conceptos</span></th>
-					<td><span data-prefix="$"></span><span>0.00</span></td>
-				</tr>
-				<tr>
-					<th><span>Total a pagar</span></th>
-					<td><span>&lt;&lt;[TOTAL VENTA]&gt;&gt;</span></td>
-				</tr>
-			</table>
-		</article>
-		<aside>
-			<h1><span>Notas adicionales</span></h1>
-			<div>
-				<p>Pagos a la cuenta de ahorros bancolombia # </p>
-			</div>
-		</aside>
-	</body>
-</html>
+                <!-- Semana 1 -->
+                <div class="calendar-day">
+                    <div class="day-number">1</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">2</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">3</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">4</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">5</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">6</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">7</div>
+                </div>
+
+                <!-- Semana 2 -->
+                <div class="calendar-day">
+                    <div class="day-number">8</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">9</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">10</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">11</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">12</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">13</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">14</div>
+                </div>
+
+                <!-- Semana 3 -->
+                <div class="calendar-day">
+                    <div class="day-number">15</div>
+                    <div class="post instagram">IG: Colección Primavera (Carrusel)</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">16</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">17</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">18</div>
+                    <div class="post facebook">FB: Behind the scenes (Video)</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">19</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">20</div>
+                    <div class="post twitter">TW: Día Mundial Felicidad</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">21</div>
+                </div>
+
+                <!-- Semana 4 -->
+                <div class="calendar-day">
+                    <div class="day-number">22</div>
+                    <div class="post instagram">IG: Encuesta usuarios (Historia)</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">23</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">24</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">25</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">26</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">27</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">28</div>
+                </div>
+
+                <!-- Semana 5 -->
+                <div class="calendar-day">
+                    <div class="day-number">29</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">30</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">31</div>
+                </div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+            </div>
+        </div>
+
+        <div id="control" class="tab-content">
+            <h2>Control de Tareas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Responsable</th>
+                        <th>Fecha límite</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sesión de fotos colección primavera</td>
+                        <td>Miguel</td>
+                        <td>10/03/2025</td>
+                        <td><span class="status priority-high">Alta</span></td>
+                        <td><span class="status completed">Completada</span></td>
+                        <td>Fotos entregadas al equipo de diseño</td>
+                    </tr>
+                    <tr>
+                        <td>Edición de video behind the scenes</td>
+                        <td>Carlos</td>
+                        <td>15/03/2025</td>
+                        <td><span class="status priority-medium">Media</span></td>
+                        <td><span class="status in-progress">En proceso</span></td>
+                        <td>Falta música y efectos finales</td>
+                    </tr>
+                    <tr>
+                        <td>Diseño para Día Mundial de la Felicidad</td>
+                        <td>Laura</td>
+                        <td>18/03/2025</td>
+                        <td><span class="status priority-medium">Media</span></td>
+                        <td><span class="status completed">Completada</span></td>
+                        <td>Aprobado por dirección creativa</td>
+                    </tr>
+                    <tr>
+                        <td>Preparar encuesta para Instagram</td>
+                        <td>Ana</td>
+                        <td>20/03/2025</td>
+                        <td><span class="status priority-low">Baja</span></td>
+                        <td><span class="status pending">Pendiente</span></td>
+                        <td>Esperando diseños alternativos</td>
+                    </tr>
+                    <tr>
+                        <td>Análisis de rendimiento febrero</td>
+                        <td>Javier</td>
+                        <td>05/03/2025</td>
+                        <td><span class="status priority-high">Alta</span></td>
+                        <td><span class="status completed">Completada</span></td>
+                        <td>Informe enviado a dirección</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="reporting" class="tab-content">
+            <h2>Reporting y Métricas</h2>
+
+            <h3>Rendimiento por Red Social - Febrero 2025</h3
